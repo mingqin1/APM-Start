@@ -5,31 +5,25 @@ import { IFruit } from '../fruits/fruit';
 export class FruitData implements InMemoryDbService {
 
     createDb() {
-        const fruit: IFruit = {
-            "name": "apple",
-            "validationErrors": {
-                "ago_timeout": [
+        const fruit: any = 
+            
+                 [
                     {
-                        "message": "a validation Message ",
-                        "type": "warning"
+                        "message": "a age out validation Message ",
+                        "propertyPath": "age_out"
                     },
                     {
-                        "message": "b validation message ",
-                        "type": "datal"
-                    }
-                ],
-                "pans_on_firs": [
-                    {
-                        "message": "a validation Message ",
-                        "type": "warning"
+                        "message": "b age out validation message ",
+                        "propertyPath": "age_out"
                     },
                     {
-                        "message": "b validation message ",
-                        "type": "datal"
+                        "message": " color fake validation message ",
+                        "propertyPath": "color_fake"
                     }
                 ]
-            }
-        }
+                
+            
+        
            
         return { fruit };
     }
