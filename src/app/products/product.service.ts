@@ -26,7 +26,7 @@ export class ProductService {
 
         let aValidationMessage = {
            message: 'a validation Message ',
-           type: 'warning'
+           type: 'warning-'
         };
 
         let bValidationMessage = {
