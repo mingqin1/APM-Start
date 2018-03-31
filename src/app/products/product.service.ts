@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { of } from 'rxjs/observable/of';
-import { catchError, tap, map } from 'rxjs/operators';
+import { catchError, tap, map , groupBy, flatMap, reduce, mergeMap, toArray} from 'rxjs/operators';
 
 import { IProduct } from './product';
 
@@ -39,9 +39,9 @@ export class ProductService {
             }, 2000);
         });
 
-
         return observable
             .pipe(
+                          
                 tap(data => alert("data Orange++++ " + JSON.stringify(data))),
                 catchError(this.handleError)
             );
@@ -81,11 +81,17 @@ export class ProductService {
         }
 
         return this.http.get<any>(this.fruitUrl)
+            .pipe (
+                groupBy(messages=> messages.propertyPath),
+                // return each item in group as array
+                mergeMap(group => group.pipe(toArray())),
+                tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
+            )
             .pipe(
                 map(res => <IFruit>{
                     name: res[0].propertyPath
                 }),
-                tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
+                //tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
                 catchError(this.handleError)
             );
     }
