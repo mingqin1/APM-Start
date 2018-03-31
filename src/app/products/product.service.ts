@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { of } from 'rxjs/observable/of';
 
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, tap, map } from 'rxjs/operators';
 
 import { IProduct } from './product';
 
@@ -25,8 +25,8 @@ export class ProductService {
         let validErrors: IValidationErrors;
 
         let aValidationMessage = {
-           message: 'a validation Message ',
-           type: 'warning-'
+            message: 'a validation Message ',
+            type: 'warning-'
         };
 
         let bValidationMessage = {
@@ -34,15 +34,15 @@ export class ProductService {
             type: 'datal'
         };
 
-    
+
         let validationMessages: ValidationMessage[];
 
         validationMessages = [aValidationMessage, bValidationMessage];
 
 
         validErrors = {
-            ['ago_timeout']: validationMessages,
-            ['pans_on_firs']: validationMessages
+            ['ago_out']: validationMessages,
+            ['color_fake']: validationMessages
         }
 
         fruit = {
@@ -50,9 +50,12 @@ export class ProductService {
             validationErrors: validErrors
         }
 
-        return this.http.get<IFruit>(this.fruitUrl)
+        return this.http.get<any>(this.fruitUrl)
             .pipe(
-                tap(data => console.log("data apple fruit===== "  + JSON.stringify(data))),
+                map( res => <IFruit>{
+                    name:res[0].propertyPath
+                }),
+                tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
                 catchError(this.handleError)
             );
     }

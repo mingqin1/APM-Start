@@ -29,7 +29,7 @@ export class ProductListComponent implements OnInit {
         this.productService.getFruit().subscribe (
             (f :IFruit) => {
                 this.fruit =f;
-                alert( "-------Apple Fruit ----- "  + JSON.stringify(this.fruit))
+                console.log( "-------Apple Fruit ----- "  + JSON.stringify(this.fruit))
             }
 
         );
