@@ -4,7 +4,6 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { of } from 'rxjs/observable/of';
-
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { IProduct } from './product';
@@ -12,6 +11,7 @@ import { IProduct } from './product';
 import { IFruit } from '../fruits/fruit';
 import { ValidationMessage } from '../fruits/validationMessage';
 import { IValidationErrors } from '../fruits/validationErrors';
+import { IUser } from '../user/user';
 
 @Injectable()
 export class ProductService {
@@ -19,6 +19,36 @@ export class ProductService {
     private fruitUrl = 'api/fruit';
 
     constructor(private http: HttpClient) { }
+
+
+
+    getArrayasObservable(): Observable<IFruit> {
+        let observable = Observable.create(observer => {
+            setTimeout(() => {
+                let users = [{ id: 1, name: 'aze1' },
+                { id: 2, name: 'sf2' },
+                { id: 2, name: 'dg2' },
+                { id: 1, name: 'erg1' },
+                { id: 1, name: 'df1' },
+                { id: 2, name: 'sfqfb2' },
+                { id: 3, name: 'qfs1' },
+                { id: 2, name: 'qsgqsfg2' }
+                ]
+                observer.next(users); // This method same as resolve() method from Angular 1
+                observer.complete();//to show we are done with our processing
+            }, 2000);
+        });
+
+
+        return observable
+            .pipe(
+                tap(data => alert("data Orange++++ " + JSON.stringify(data))),
+                catchError(this.handleError)
+            );
+
+
+
+    }
 
     getFruit(): Observable<IFruit> {
         let fruit: IFruit;
@@ -52,8 +82,8 @@ export class ProductService {
 
         return this.http.get<any>(this.fruitUrl)
             .pipe(
-                map( res => <IFruit>{
-                    name:res[0].propertyPath
+                map(res => <IFruit>{
+                    name: res[0].propertyPath
                 }),
                 tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
                 catchError(this.handleError)
