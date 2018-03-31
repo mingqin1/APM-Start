@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, group } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
@@ -38,6 +38,8 @@ export class ProductService {
                 observer.next(users); // This method same as resolve() method from Angular 1
                 observer.complete();//to show we are done with our processing
             }, 2000);
+
+
         });
 
         return observable
@@ -57,7 +59,7 @@ export class ProductService {
 
         let aValidationMessage = {
             message: 'a validation Message ',
-            type: 'warning-'
+            type: 'warning'
         };
 
         let bValidationMessage = {
@@ -81,54 +83,71 @@ export class ProductService {
             validationErrors: validErrors
         }
 
-        const message = [
-          
-            {
-                "message": "a age out validation Message ",
-                "propertyPath": "age_out"
-            },
-            {
-                "message": " c color fake validation message ",
-                "propertyPath": "color_fake"
-            },
-            {
-                "message": "b age out validation message ",
-                "propertyPath": "age_out"
-            },
 
-          
+        //groupby is working
 
-        ];
+        // const message = [
+        //     {
+        //         "message": " c color fake validation message ",
+        //         "propertyPath": "color_fake"
+        //     },
 
-        //emit each person
-        const source = from(message);
+        //     {
+        //         "message": "a age out validation Message ",
+        //         "propertyPath": "age_out"
+        //     },
+        //     {
+        //         "message": " c color fake validation message ",
+        //         "propertyPath": "color_fake"
+        //     },
+        //     {
+        //         "message": "b age out validation message ",
+        //         "propertyPath": "age_out"
+        //     },
 
-        //group by age
-        const example = source.pipe(
-            groupBy(message => message.propertyPath),
-            // return each item in group as array
-            mergeMap(group => group.pipe(toArray()))
-        );
 
-        const subscribe = example.subscribe(val => console.log(JSON.stringify(val)));
-        
+        // ];
+
+        // const source = from(message);
+
+        // //group by propetyPath
+        // const example = source.pipe(
+        //     groupBy(message => message.propertyPath),
+
+        // ).pipe(
+        //      // return each item in group as array
+        //      flatMap(group => group.pipe(toArray()  ))
+
+
+        // );
+        // const subscribe = example.subscribe(val => console.log(JSON.stringify(val)));
+
+
+
+
+
+        //const subscribe = example.subscribe(val => console.log(JSON.stringify(val)));
+
         return this.http.get<any>(this.fruitUrl)
             .pipe(
-                //groupBy(message=> message.propertyPath),
+                groupBy(message => message.propertyPath),
                 // return each item in group as array
                 flatMap((group) => group.pipe(
+
                     reduce((acc, cur) => [...acc, cur], [])),
                 ),
 
-                tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
+                tap(data => console.log("data apple fruit===== " + JSON.stringify(data))),
         )
             .pipe(
                 map(res => <IFruit>{
                     name: '1223'
                 }),
-                //tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
+                tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
                 catchError(this.handleError)
             );
+
+
     }
 
 
