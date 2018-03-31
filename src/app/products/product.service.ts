@@ -4,7 +4,8 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { of } from 'rxjs/observable/of';
-import { catchError, tap, map , groupBy, flatMap, reduce, mergeMap, toArray} from 'rxjs/operators';
+import { from } from 'rxjs/observable/from';
+import { catchError, tap, map, groupBy, flatMap, reduce, mergeMap, toArray } from 'rxjs/operators';
 
 import { IProduct } from './product';
 
@@ -41,7 +42,7 @@ export class ProductService {
 
         return observable
             .pipe(
-                          
+
                 tap(data => alert("data Orange++++ " + JSON.stringify(data))),
                 catchError(this.handleError)
             );
@@ -80,16 +81,50 @@ export class ProductService {
             validationErrors: validErrors
         }
 
+        const message = [
+          
+            {
+                "message": "a age out validation Message ",
+                "propertyPath": "age_out"
+            },
+            {
+                "message": " c color fake validation message ",
+                "propertyPath": "color_fake"
+            },
+            {
+                "message": "b age out validation message ",
+                "propertyPath": "age_out"
+            },
+
+          
+
+        ];
+
+        //emit each person
+        const source = from(message);
+
+        //group by age
+        const example = source.pipe(
+            groupBy(message => message.propertyPath),
+            // return each item in group as array
+            mergeMap(group => group.pipe(toArray()))
+        );
+
+        const subscribe = example.subscribe(val => console.log(JSON.stringify(val)));
+        
         return this.http.get<any>(this.fruitUrl)
-            .pipe (
-                groupBy(messages=> messages.propertyPath),
+            .pipe(
+                //groupBy(message=> message.propertyPath),
                 // return each item in group as array
-                mergeMap(group => group.pipe(toArray())),
+                flatMap((group) => group.pipe(
+                    reduce((acc, cur) => [...acc, cur], [])),
+                ),
+
                 tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
-            )
+        )
             .pipe(
                 map(res => <IFruit>{
-                    name: res[0].propertyPath
+                    name: '1223'
                 }),
                 //tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
                 catchError(this.handleError)
