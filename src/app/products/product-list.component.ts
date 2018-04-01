@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { IProduct } from './product';
 import { ProductService } from './product.service';
 import { IFruit } from '../fruits/fruit';
+import { ValidationMessage } from '../fruits/validationMessage';
+import { IValidationErrors } from '../fruits/validationErrors';
 
 @Component({
     templateUrl: './product-list.component.html',
@@ -22,6 +24,8 @@ export class ProductListComponent implements OnInit {
 
     fruit:IFruit;
 
+    validationMessages: ValidationMessage[];
+
     constructor(private productService: ProductService) { }
 
     ngOnInit(): void {
@@ -34,9 +38,9 @@ export class ProductListComponent implements OnInit {
         // );
 
         this.productService.getFruit().subscribe (
-            (f :IFruit) => {
-                this.fruit =f;
-                console.log( "-------Apple Fruit ----- "  + JSON.stringify(this.fruit))
+            (vms :ValidationMessage[]) => {
+                this.validationMessages =vms;
+                console.log( "-------Apple Fruit ----- "  + JSON.stringify(this.validationMessages))
             }
         );
 

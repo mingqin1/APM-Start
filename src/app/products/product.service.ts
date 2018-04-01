@@ -5,7 +5,9 @@ import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { of } from 'rxjs/observable/of';
 import { from } from 'rxjs/observable/from';
-import { catchError, tap, map, groupBy, flatMap, reduce, mergeMap, toArray } from 'rxjs/operators';
+import { catchError, tap , map} from 'rxjs/operators';
+import 'rxjs/add/operator/map';
+
 
 import { IProduct } from './product';
 
@@ -53,35 +55,35 @@ export class ProductService {
 
     }
 
-    getFruit(): Observable<IFruit> {
-        let fruit: IFruit;
-        let validErrors: IValidationErrors;
+    getFruit(): Observable<ValidationMessage[]> {
+        // let fruit: IFruit;
+        // let validErrors: IValidationErrors;
 
-        let aValidationMessage = {
-            message: 'a validation Message ',
-            type: 'warning'
-        };
+        // let aValidationMessage = {
+        //     message: 'a validation Message ',
+        //     type: 'warning'
+        // };
 
-        let bValidationMessage = {
-            message: 'b validation message ',
-            type: 'datal'
-        };
-
-
-        let validationMessages: ValidationMessage[];
-
-        validationMessages = [aValidationMessage, bValidationMessage];
+        // let bValidationMessage = {
+        //     message: 'b validation message ',
+        //     type: 'datal'
+        // };
 
 
-        validErrors = {
-            ['ago_out']: validationMessages,
-            ['color_fake']: validationMessages
-        }
+        // let validationMessages: ValidationMessage[];
 
-        fruit = {
-            name: 'apple',
-            validationErrors: validErrors
-        }
+        // validationMessages = [aValidationMessage, bValidationMessage];
+
+
+        // validErrors = {
+        //     ['ago_out']: validationMessages,
+        //     ['color_fake']: validationMessages
+        // }
+
+        // fruit = {
+        //     name: 'apple',
+        //     validationErrors: validErrors
+        // }
 
 
         //groupby is working
@@ -123,29 +125,42 @@ export class ProductService {
         // const subscribe = example.subscribe(val => console.log(JSON.stringify(val)));
 
 
+        return this.http.get<ValidationMessage[]>(this.fruitUrl)
+        .pipe(
+            map((responses: Array<any>) => {
+                let result: Array<ValidationMessage> = [];
+                if (responses) {
+                    responses.forEach((response) => {
+                        result.push(  
+                            new ValidationMessage(response.message,
+                                response.propertyPath)
+                        );
+                    })
+                }
+                return result;
+            }),
+            tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
+            catchError(this.handleError)
 
-
-
-        //const subscribe = example.subscribe(val => console.log(JSON.stringify(val)));
-
-        return this.http.get<any>(this.fruitUrl)
-            .pipe(
-                groupBy(message => message.propertyPath),
-                // return each item in group as array
-                flatMap((group) => group.pipe(
-
-                    reduce((acc, cur) => [...acc, cur], [])),
-                ),
-
-                tap(data => console.log("data apple fruit===== " + JSON.stringify(data))),
         )
-            .pipe(
-                map(res => <IFruit>{
-                    name: '1223'
-                }),
-                tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
-                catchError(this.handleError)
-            );
+           
+        //     .pipe(
+        //         groupBy(message => message.propertyPath),
+        //         // return each item in group as array
+        //         flatMap((group) => group.pipe(
+
+        //             reduce((acc, cur) => [...acc, cur], [])),
+        //         ),
+
+        //         tap(data => console.log("data apple fruit===== " + JSON.stringify(data))),
+        // )
+        //     .pipe(
+        //         map(res => <IFruit>{
+        //             name: '1223'
+        //         }),
+        //         tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
+        //         catchError(this.handleError)
+        //     );
 
 
     }
