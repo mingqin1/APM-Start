@@ -5,8 +5,9 @@ import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { of } from 'rxjs/observable/of';
 import { from } from 'rxjs/observable/from';
-import { catchError, tap , map} from 'rxjs/operators';
+import { catchError, tap, map, groupBy } from 'rxjs/operators';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/groupBy';
 
 
 import { IProduct } from './product';
@@ -24,36 +25,6 @@ export class ProductService {
     constructor(private http: HttpClient) { }
 
 
-
-    getArrayasObservable(): Observable<IFruit> {
-        let observable = Observable.create(observer => {
-            setTimeout(() => {
-                let users = [{ id: 1, name: 'aze1' },
-                { id: 2, name: 'sf2' },
-                { id: 2, name: 'dg2' },
-                { id: 1, name: 'erg1' },
-                { id: 1, name: 'df1' },
-                { id: 2, name: 'sfqfb2' },
-                { id: 3, name: 'qfs1' },
-                { id: 2, name: 'qsgqsfg2' }
-                ]
-                observer.next(users); // This method same as resolve() method from Angular 1
-                observer.complete();//to show we are done with our processing
-            }, 2000);
-
-
-        });
-
-        return observable
-            .pipe(
-
-                tap(data => alert("data Orange++++ " + JSON.stringify(data))),
-                catchError(this.handleError)
-            );
-
-
-
-    }
 
     getFruit(): Observable<ValidationMessage[]> {
         // let fruit: IFruit;
@@ -126,24 +97,26 @@ export class ProductService {
 
 
         return this.http.get<ValidationMessage[]>(this.fruitUrl)
-        .pipe(
-            map((responses: Array<any>) => {
-                let result: Array<ValidationMessage> = [];
-                if (responses) {
-                    responses.forEach((response) => {
-                        result.push(  
-                            new ValidationMessage(response.message,
-                                response.propertyPath)
-                        );
-                    })
-                }
-                return result;
-            }),
+            .pipe(
+                map((responses: Array<any>) => {
+                    let result: Array<ValidationMessage> = [];
+                    if (responses) {
+                        responses.forEach((response) => {
+                            result.push(
+                                new ValidationMessage(response.message,
+                                    response.propertyPath)
+                            );
+                        })
+                    }
+                    return result;
+                }),
             tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
             catchError(this.handleError)
-
         )
-           
+        .pipe(
+            
+        )
+
         //     .pipe(
         //         groupBy(message => message.propertyPath),
         //         // return each item in group as array

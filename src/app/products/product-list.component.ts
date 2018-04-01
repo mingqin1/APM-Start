@@ -30,12 +30,6 @@ export class ProductListComponent implements OnInit {
 
     ngOnInit(): void {
 
-        // this.productService.getArrayasObservable().subscribe (
-        //     (f :IFruit) => {
-        //         this.fruit =f;
-        //         console.log( "-------Orange ----- "  + JSON.stringify(this.fruit))
-        //     }
-        // );
 
         this.productService.getFruit().subscribe (
             (vms :ValidationMessage[]) => {
