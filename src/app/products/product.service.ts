@@ -27,6 +27,16 @@ export class ProductService {
 
 
     getFruit(): Observable<IValidationErrors> {
+
+        let dict = { alice: 34, bob: 24, chris: 62 };
+        let people = [];
+
+        for (var name in dict) {
+            people.push(name + ": " + dict[name]);
+        }
+        
+        console.log(  ' people:' + people);
+
         let fruit: IFruit;
         let validErrors: IValidationErrors;
 
@@ -46,11 +56,13 @@ export class ProductService {
         validationMessages = [aValidationMessage, bValidationMessage];
 
 
-        validErrors = {
-            ['ago_out']: validationMessages,
-            ['color_fake']: validationMessages
-        }
-
+         validErrors = {
+           ['']: null
+           
+         }
+       
+        validErrors['ago_out']=validationMessages;
+        validErrors['color_fake']=validationMessages;
 
         fruit = {
             name: 'apple',
