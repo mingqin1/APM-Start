@@ -5,7 +5,7 @@ import { IFruit } from '../fruits/fruit';
 export class FruitData implements InMemoryDbService {
 
     createDb() {
-        const fruit: IFruit = {
+        const fruit= {
             "name": "apple",
             "validationErrors": {
                 "ago_timeout": [

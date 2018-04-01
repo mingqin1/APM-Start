@@ -25,6 +25,7 @@ export class ProductListComponent implements OnInit {
     fruit:IFruit;
 
     validationMessages: ValidationMessage[];
+    validationErrors: IValidationErrors
 
     constructor(private productService: ProductService) { }
 
@@ -32,9 +33,9 @@ export class ProductListComponent implements OnInit {
 
 
         this.productService.getFruit().subscribe (
-            (vms :ValidationMessage[]) => {
-                this.validationMessages =vms;
-                console.log( "-------Apple Fruit ----- "  + JSON.stringify(this.validationMessages))
+            (result :IValidationErrors) => {
+                this.validationErrors =result;
+                console.log( "-------Apple Fruit ----- "  + JSON.stringify(this.validationErrors))
             }
         );
 

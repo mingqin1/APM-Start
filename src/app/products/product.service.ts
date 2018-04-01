@@ -5,7 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { of } from 'rxjs/observable/of';
 import { from } from 'rxjs/observable/from';
-import { catchError, tap, map, groupBy } from 'rxjs/operators';
+import { catchError, tap, map, groupBy, flatMap, toArray } from 'rxjs/operators';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/groupBy';
 
@@ -26,35 +26,36 @@ export class ProductService {
 
 
 
-    getFruit(): Observable<ValidationMessage[]> {
-        // let fruit: IFruit;
-        // let validErrors: IValidationErrors;
+    getFruit(): Observable<IValidationErrors> {
+        let fruit: IFruit;
+        let validErrors: IValidationErrors;
 
-        // let aValidationMessage = {
-        //     message: 'a validation Message ',
-        //     type: 'warning'
-        // };
+        let aValidationMessage = {
+            message: 'a validation Message ',
+            type: 'warning'
+        };
 
-        // let bValidationMessage = {
-        //     message: 'b validation message ',
-        //     type: 'datal'
-        // };
-
-
-        // let validationMessages: ValidationMessage[];
-
-        // validationMessages = [aValidationMessage, bValidationMessage];
+        let bValidationMessage = {
+            message: 'b validation message ',
+            type: 'datal'
+        };
 
 
-        // validErrors = {
-        //     ['ago_out']: validationMessages,
-        //     ['color_fake']: validationMessages
-        // }
+        let validationMessages: ValidationMessage[];
 
-        // fruit = {
-        //     name: 'apple',
-        //     validationErrors: validErrors
-        // }
+        validationMessages = [aValidationMessage, bValidationMessage];
+
+
+        validErrors = {
+            ['ago_out']: validationMessages,
+            ['color_fake']: validationMessages
+        }
+
+
+        fruit = {
+            name: 'apple',
+            validationErrors: validErrors
+        }
 
 
         //groupby is working
@@ -99,23 +100,51 @@ export class ProductService {
         return this.http.get<ValidationMessage[]>(this.fruitUrl)
             .pipe(
                 map((responses: Array<any>) => {
-                    let result: Array<ValidationMessage> = [];
+                    let validationMessages: Array<ValidationMessage> = [];
+                    let keys: Array<string> = new Array<string>();
+
+                    let result: IValidationErrors;
                     if (responses) {
                         responses.forEach((response) => {
-                            result.push(
+                            validationMessages.push(
                                 new ValidationMessage(response.message,
                                     response.propertyPath)
                             );
+                            keys.push(response.propertyPath);
                         })
                     }
-                    return result;
+                    // result key size after removing duplicated ones
+                    let keyTypes = keys.filter(function (elem, index, self) {
+                        return index === self.indexOf(elem);
+                    });
+
+                    // result key matched array of valiationMessage
+                    let vidaMsgArry = new Array<Array<ValidationMessage>>(keyTypes.length);
+                    let i: number;
+                    for (i = 0; i < keyTypes.length; i++) {
+                        vidaMsgArry[i] = new Array<ValidationMessage>();
+                    }
+
+                    validationMessages.forEach((validationMessage) => {
+                        vidaMsgArry[keyTypes.indexOf(validationMessage.type)].push(validationMessage);
+
+                    })
+
+                    console.log("0  " + JSON.stringify(vidaMsgArry[0]));
+                    console.log("0  " + JSON.stringify(keyTypes[0]));
+                    console.log("1  " + JSON.stringify(vidaMsgArry[1]));
+                    console.log("1  " + JSON.stringify(keyTypes[1]));
+                    // console.log (  "vidaMsgArry size  " +  vidaMsgArry.length);
+
+
+                    return validationMessages;
                 }),
-            tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
-            catchError(this.handleError)
-        )
-        .pipe(
-            
-        )
+                tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
+                catchError(this.handleError)
+            )
+            .pipe(
+
+            )
 
         //     .pipe(
         //         groupBy(message => message.propertyPath),
