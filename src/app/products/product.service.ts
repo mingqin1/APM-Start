@@ -64,12 +64,16 @@ export class ProductService {
         validErrors['ago_out']=validationMessages;
         validErrors['color_fake']=validationMessages;
 
+        delete validErrors[''];
+
+        alert (  Object.keys(validErrors).length);
+
         fruit = {
             name: 'apple',
             validationErrors: validErrors
         }
 
-
+      
         //groupby is working
 
         // const message = [
