@@ -115,7 +115,7 @@ export class ProductService {
 
         return this.http.get<ValidationMessage[]>(this.fruitUrl)
             .pipe(
-                map((responses: Array<any>) => {
+                map((responses:any) => {
                     let validationMessages: Array<ValidationMessage> = [];
                     let keys: Array<string> = new Array<string>();
 
@@ -150,7 +150,7 @@ export class ProductService {
                     console.log("0  " + JSON.stringify(keyTypes[0]));
                     console.log("1  " + JSON.stringify(vidaMsgArry[1]));
                     console.log("1  " + JSON.stringify(keyTypes[1]));
-                    // console.log (  "vidaMsgArry size  " +  vidaMsgArry.length);
+                    console.log (  "vidaMsgArry size  " +  vidaMsgArry.length);
 
 
                     return validationMessages;
@@ -158,9 +158,13 @@ export class ProductService {
                 tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
                 catchError(this.handleError)
             )
-            .pipe(
-
-            )
+            // .pipe(
+            //     map(responses => {
+            //         return responses;
+            //     }),
+            //     tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
+            //     catchError(this.handleError)
+            // )
 
         //     .pipe(
         //         groupBy(message => message.propertyPath),
