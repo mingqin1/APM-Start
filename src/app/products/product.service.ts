@@ -192,7 +192,7 @@ export class ProductService {
         return this.http.get<IProduct[]>(this.productsUrl)
             .pipe(
 
-                ming change  tap(data => console.log(JSON.stringify(data))),
+                I am change tap(data => console.log(JSON.stringify(data))),
 
               
                 catchError(this.handleError)
