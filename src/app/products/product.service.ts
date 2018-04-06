@@ -191,7 +191,7 @@ export class ProductService {
     getProducts(): Observable<IProduct[]> {
         return this.http.get<IProduct[]>(this.productsUrl)
             .pipe(
-              here is ming's changes  tap(data => console.log(JSON.stringify(data))),
+              tap(data => console.log(JSON.stringify(data))),
                 catchError(this.handleError)
             );
     }
