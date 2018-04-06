@@ -191,6 +191,7 @@ export class ProductService {
     getProducts(): Observable<IProduct[]> {
         return this.http.get<IProduct[]>(this.productsUrl)
             .pipe(
+                //I want to test
                 tap(data => console.log(JSON.stringify(data))),
                 catchError(this.handleError)
             );
