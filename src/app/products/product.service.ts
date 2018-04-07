@@ -191,7 +191,7 @@ export class ProductService {
     getProducts(): Observable<IProduct[]> {
         return this.http.get<IProduct[]>(this.productsUrl)
             .pipe(
-             conflitcted tap(data => console.log(JSON.stringify(data))),
+             conflitcted1 tap(data => console.log(JSON.stringify(data))),
                 catchError(this.handleError)
             );
     }
