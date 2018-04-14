@@ -193,7 +193,7 @@ export class ProductService {
         console.log ( 'myEnv  :' + myEnv);
         return this.http.get<IProduct[]>(this.productsUrl)
             .pipe(
-              tap(data => console.log(JSON.stringify(data))),
+            master tap(data => console.log(JSON.stringify(data))),
                 catchError(this.handleError)
             );
     }
