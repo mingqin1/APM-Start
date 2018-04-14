@@ -189,9 +189,11 @@ export class ProductService {
 
 
     getProducts(): Observable<IProduct[]> {
+        let myEnv='';
+        console.log ( 'myEnv  :' + myEnv);
         return this.http.get<IProduct[]>(this.productsUrl)
             .pipe(
-             ming's change4 tap(data => console.log(JSON.stringify(data))),
+              tap(data => console.log(JSON.stringify(data))),
                 catchError(this.handleError)
             );
     }
