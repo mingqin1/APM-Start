@@ -66,7 +66,7 @@ export class ProductService {
 
         delete validErrors[''];
 
-        alert(Object.keys(validErrors).length);
+        //alert(Object.keys(validErrors).length);
 
         fruit = {
             name: 'apple',
@@ -159,13 +159,16 @@ export class ProductService {
                 catchError(this.handleError)
             )
             .pipe(
+                //Combining Observables in series
                 flatMap((data: any) => {
                     //alert(JSON.stringify(data));
                     return this.http.get<ValidationMessage[]>(this.fruitUrl)
-                    .map((res: any)=>res)
+                    .map((res: any)=>{
+                        data.forEach((d=>res.push(d)) )
+                        return res})
                 }),
 
-                tap(data => alert("data apple fruit 2===== " + JSON.stringify(data))),
+                tap(res=> alert("data apple fruit 2===== " + JSON.stringify(res))),
                 catchError(this.handleError)
 
             )
