@@ -30,13 +30,6 @@ export class ProductService {
 
         return this.http.get<any>(this.fruitUrl)
             .pipe(
-                map((responses: any) => {
-                  return responses;
-                }),
-                //tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
-                catchError(this.handleError)
-            )
-            .pipe(
                 //Combining Observables in series
                 flatMap((data: any) => {
                     //alert(JSON.stringify(data));
