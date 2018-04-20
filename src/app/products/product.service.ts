@@ -26,7 +26,7 @@ export class ProductService {
 
 
 
-    getFruit(): Observable<IValidationErrors> {
+    getFruit(): Observable<any> {
 
         let dict = { alice: 34, bob: 24, chris: 62 };
         let people = [];
@@ -34,8 +34,8 @@ export class ProductService {
         for (var name in dict) {
             people.push(name + ": " + dict[name]);
         }
-        
-        console.log(  ' people:' + people);
+
+        console.log(' people:' + people);
 
         let fruit: IFruit;
         let validErrors: IValidationErrors;
@@ -56,24 +56,24 @@ export class ProductService {
         validationMessages = [aValidationMessage, bValidationMessage];
 
 
-         validErrors = {
-           ['']: null
-           
-         }
-       
-        validErrors['ago_out']=validationMessages;
-        validErrors['color_fake']=validationMessages;
+        validErrors = {
+            ['']: null
+
+        }
+
+        validErrors['ago_out'] = validationMessages;
+        validErrors['color_fake'] = validationMessages;
 
         delete validErrors[''];
 
-        alert (  Object.keys(validErrors).length);
+        alert(Object.keys(validErrors).length);
 
         fruit = {
             name: 'apple',
             validationErrors: validErrors
         }
 
-      
+
         //groupby is working
 
         // const message = [
@@ -113,9 +113,9 @@ export class ProductService {
         // const subscribe = example.subscribe(val => console.log(JSON.stringify(val)));
 
 
-        return this.http.get<ValidationMessage[]>(this.fruitUrl)
+        return this.http.get<any>(this.fruitUrl)
             .pipe(
-                map((responses:any) => {
+                map((responses: any) => {
                     let validationMessages: Array<ValidationMessage> = [];
                     let keys: Array<string> = new Array<string>();
 
@@ -150,21 +150,40 @@ export class ProductService {
                     console.log("0  " + JSON.stringify(keyTypes[0]));
                     console.log("1  " + JSON.stringify(vidaMsgArry[1]));
                     console.log("1  " + JSON.stringify(keyTypes[1]));
-                    console.log (  "vidaMsgArry size  " +  vidaMsgArry.length);
+                    console.log("vidaMsgArry size  " + vidaMsgArry.length);
 
 
                     return validationMessages;
                 }),
-                tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
+                //tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
                 catchError(this.handleError)
             )
-            // .pipe(
-            //     map(responses => {
-            //         return responses;
-            //     }),
-            //     tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
-            //     catchError(this.handleError)
-            // )
+            .pipe(
+                flatMap((data: any) => {
+                    //alert(JSON.stringify(data));
+                    return this.http.get<ValidationMessage[]>(this.fruitUrl)
+                    .map((res: any)=>res)
+                }),
+
+                tap(data => alert("data apple fruit 2===== " + JSON.stringify(data))),
+                catchError(this.handleError)
+
+            )
+        //     .pipe(
+        //         map( (data:any) => {
+        //        alert(  JSON.stringify(data));
+        //        return  data  }) ,
+
+        //        tap(data => alert("data apple fruit 2===== " + JSON.stringify(data))),
+        //        catchError(this.handleError)
+
+        //    )
+
+
+
+        // .map( (responses:any) => {
+        //     alert(  JSON.stringify(responses));
+        //     return  responses  }) ;
 
         //     .pipe(
         //         groupBy(message => message.propertyPath),
@@ -193,7 +212,11 @@ export class ProductService {
         console.log ( 'myEnv  :' + myEnv);
         return this.http.get<IProduct[]>(this.productsUrl)
             .pipe(
+<<<<<<< HEAD
             master tap(data => console.log(JSON.stringify(data))),
+=======
+                tap(data => console.log(JSON.stringify(data))),
+>>>>>>> simiValley_local
                 catchError(this.handleError)
             );
     }

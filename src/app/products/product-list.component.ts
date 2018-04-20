@@ -33,7 +33,7 @@ export class ProductListComponent implements OnInit {
 
 
         this.productService.getFruit().subscribe (
-            (result :IValidationErrors) => {
+            (result :any) => {
                 this.validationErrors =result;
                 console.log( "-------Apple Fruit ----- "  + JSON.stringify(this.validationErrors))
             }
