@@ -1,13 +1,14 @@
 import { Injectable, group } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { of } from 'rxjs/observable/of';
 import { from } from 'rxjs/observable/from';
 import { catchError, tap, map, groupBy, flatMap, toArray } from 'rxjs/operators';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/groupBy';
+
 
 
 import { IProduct } from './product';
@@ -24,189 +25,24 @@ export class ProductService {
 
     constructor(private http: HttpClient) { }
 
-
-
     getFruit(): Observable<any> {
-
-        let dict = { alice: 34, bob: 24, chris: 62 };
-        let people = [];
-
-        for (var name in dict) {
-            people.push(name + ": " + dict[name]);
-        }
-
-        console.log(' people:' + people);
-
-        let fruit: IFruit;
-        let validErrors: IValidationErrors;
-
-        let aValidationMessage = {
-            message: 'a validation Message ',
-            type: 'warning'
-        };
-
-        let bValidationMessage = {
-            message: 'b validation message ',
-            type: 'datal'
-        };
-
-
-        let validationMessages: ValidationMessage[];
-
-        validationMessages = [aValidationMessage, bValidationMessage];
-
-
-        validErrors = {
-            ['']: null
-
-        }
-
-        validErrors['ago_out'] = validationMessages;
-        validErrors['color_fake'] = validationMessages;
-
-        delete validErrors[''];
-
-        //alert(Object.keys(validErrors).length);
-
-        fruit = {
-            name: 'apple',
-            validationErrors: validErrors
-        }
-
-
-        //groupby is working
-
-        // const message = [
-        //     {
-        //         "message": " c color fake validation message ",
-        //         "propertyPath": "color_fake"
-        //     },
-
-        //     {
-        //         "message": "a age out validation Message ",
-        //         "propertyPath": "age_out"
-        //     },
-        //     {
-        //         "message": " c color fake validation message ",
-        //         "propertyPath": "color_fake"
-        //     },
-        //     {
-        //         "message": "b age out validation message ",
-        //         "propertyPath": "age_out"
-        //     },
-
-
-        // ];
-
-        // const source = from(message);
-
-        // //group by propetyPath
-        // const example = source.pipe(
-        //     groupBy(message => message.propertyPath),
-
-        // ).pipe(
-        //      // return each item in group as array
-        //      flatMap(group => group.pipe(toArray()  ))
-
-
-        // );
-        // const subscribe = example.subscribe(val => console.log(JSON.stringify(val)));
-
-
-        return this.http.get<any>(this.fruitUrl)
-            .pipe(
-                map((responses: any) => {
-                    let validationMessages: Array<ValidationMessage> = [];
-                    let keys: Array<string> = new Array<string>();
-
-                    let result: IValidationErrors;
-                    if (responses) {
-                        responses.forEach((response) => {
-                            validationMessages.push(
-                                new ValidationMessage(response.message,
-                                    response.propertyPath)
-                            );
-                            keys.push(response.propertyPath);
-                        })
-                    }
-                    // result key size after removing duplicated ones
-                    let keyTypes = keys.filter(function (elem, index, self) {
-                        return index === self.indexOf(elem);
-                    });
-
-                    // result key matched array of valiationMessage
-                    let vidaMsgArry = new Array<Array<ValidationMessage>>(keyTypes.length);
-                    let i: number;
-                    for (i = 0; i < keyTypes.length; i++) {
-                        vidaMsgArry[i] = new Array<ValidationMessage>();
-                    }
-
-                    validationMessages.forEach((validationMessage) => {
-                        vidaMsgArry[keyTypes.indexOf(validationMessage.type)].push(validationMessage);
-
-                    })
-
-                    console.log("0  " + JSON.stringify(vidaMsgArry[0]));
-                    console.log("0  " + JSON.stringify(keyTypes[0]));
-                    console.log("1  " + JSON.stringify(vidaMsgArry[1]));
-                    console.log("1  " + JSON.stringify(keyTypes[1]));
-                    console.log("vidaMsgArry size  " + vidaMsgArry.length);
-
-
-                    return validationMessages;
-                }),
-                //tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
-                catchError(this.handleError)
-            )
-            .pipe(
-                //Combining Observables in series
-                flatMap((data: any) => {
-                    //alert(JSON.stringify(data));
-                    return this.http.get<ValidationMessage[]>(this.fruitUrl)
-                    .map((res: any)=>{
-                        data.forEach((d=>res.push(d)) )
-                        return res})
-                }),
-
-                tap(res=> alert("data apple fruit 2===== " + JSON.stringify(res))),
-                catchError(this.handleError)
-
-            )
-        //     .pipe(
-        //         map( (data:any) => {
-        //        alert(  JSON.stringify(data));
-        //        return  data  }) ,
-
-        //        tap(data => alert("data apple fruit 2===== " + JSON.stringify(data))),
-        //        catchError(this.handleError)
-
-        //    )
-
-
-
-        // .map( (responses:any) => {
-        //     alert(  JSON.stringify(responses));
-        //     return  responses  }) ;
-
-        //     .pipe(
-        //         groupBy(message => message.propertyPath),
-        //         // return each item in group as array
-        //         flatMap((group) => group.pipe(
-
-        //             reduce((acc, cur) => [...acc, cur], [])),
-        //         ),
-
-        //         tap(data => console.log("data apple fruit===== " + JSON.stringify(data))),
-        // )
-        //     .pipe(
-        //         map(res => <IFruit>{
-        //             name: '1223'
-        //         }),
-        //         tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
-        //         catchError(this.handleError)
-        //     );
-
-
+        //Combining Observables in parallel
+        return Observable.forkJoin([
+            this.http.get<any>(this.fruitUrl).map( res=>res),
+            this.http.get<any>(this.fruitUrl).map( res=>res)
+        ])
+        .pipe(   
+            map( ( resp: any[])=> {
+                alert (JSON.stringify(resp));
+                 resp[0].forEach( element => resp[1].push(element));
+                 return resp[1]
+                      
+            }),
+            tap(rest => alert (JSON.stringify(rest))),
+            catchError(this.handleError)
+        )
+        
+    
     }
 
 
