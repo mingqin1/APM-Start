@@ -212,11 +212,7 @@ export class ProductService {
         console.log ( 'myEnv  :' + myEnv);
         return this.http.get<IProduct[]>(this.productsUrl)
             .pipe(
-<<<<<<< HEAD
-            master tap(data => console.log(JSON.stringify(data))),
-=======
                 tap(data => console.log(JSON.stringify(data))),
->>>>>>> simiValley_local
                 catchError(this.handleError)
             );
     }
