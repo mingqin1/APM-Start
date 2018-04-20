@@ -25,25 +25,32 @@ export class ProductService {
 
     constructor(private http: HttpClient) { }
 
+   
     getFruit(): Observable<any> {
-        //Combining Observables in parallel
-        return Observable.forkJoin([
-            this.http.get<any>(this.fruitUrl).map( res=>res),
-            this.http.get<any>(this.fruitUrl).map( res=>res)
-        ])
-        .pipe(   
-            map( ( resp: any[])=> {
-                alert (JSON.stringify(resp));
-                 resp[0].forEach( element => resp[1].push(element));
-                 return resp[1]
-                      
-            }),
-            tap(rest => alert (JSON.stringify(rest))),
-            catchError(this.handleError)
-        )
-        
-    
+        return this.http.get<any>(this.fruitUrl)
+            .pipe(
+                flatMap((data: any) => {
+                    if ( data.length >0){
+                        return Observable.forkJoin(
+                            data.map((d:any)=>{
+                                return this.http.get<any>(this.fruitUrl)
+                                .map( (res:any)=>{
+                                    return res;
+                                })
+                            })
+                        );
+
+                    }
+                    return Observable.of([]);
+                   
+                }),
+
+                tap(res=> alert("data apple fruit 2===== " + JSON.stringify(res))),
+                catchError(this.handleError)
+
+            )  
     }
+
 
 
     getProducts(): Observable<IProduct[]> {
