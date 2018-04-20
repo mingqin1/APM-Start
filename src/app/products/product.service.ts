@@ -31,44 +31,7 @@ export class ProductService {
         return this.http.get<any>(this.fruitUrl)
             .pipe(
                 map((responses: any) => {
-                    let validationMessages: Array<ValidationMessage> = [];
-                    let keys: Array<string> = new Array<string>();
-
-                    let result: IValidationErrors;
-                    if (responses) {
-                        responses.forEach((response) => {
-                            validationMessages.push(
-                                new ValidationMessage(response.message,
-                                    response.propertyPath)
-                            );
-                            keys.push(response.propertyPath);
-                        })
-                    }
-                    // result key size after removing duplicated ones
-                    let keyTypes = keys.filter(function (elem, index, self) {
-                        return index === self.indexOf(elem);
-                    });
-
-                    // result key matched array of valiationMessage
-                    let vidaMsgArry = new Array<Array<ValidationMessage>>(keyTypes.length);
-                    let i: number;
-                    for (i = 0; i < keyTypes.length; i++) {
-                        vidaMsgArry[i] = new Array<ValidationMessage>();
-                    }
-
-                    validationMessages.forEach((validationMessage) => {
-                        vidaMsgArry[keyTypes.indexOf(validationMessage.type)].push(validationMessage);
-
-                    })
-
-                    console.log("0  " + JSON.stringify(vidaMsgArry[0]));
-                    console.log("0  " + JSON.stringify(keyTypes[0]));
-                    console.log("1  " + JSON.stringify(vidaMsgArry[1]));
-                    console.log("1  " + JSON.stringify(keyTypes[1]));
-                    console.log("vidaMsgArry size  " + vidaMsgArry.length);
-
-
-                    return validationMessages;
+                  return responses;
                 }),
                 //tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
                 catchError(this.handleError)
@@ -87,41 +50,8 @@ export class ProductService {
                 catchError(this.handleError)
 
             )
-        //     .pipe(
-        //         map( (data:any) => {
-        //        alert(  JSON.stringify(data));
-        //        return  data  }) ,
-
-        //        tap(data => alert("data apple fruit 2===== " + JSON.stringify(data))),
-        //        catchError(this.handleError)
-
-        //    )
-
-
-
-        // .map( (responses:any) => {
-        //     alert(  JSON.stringify(responses));
-        //     return  responses  }) ;
-
-        //     .pipe(
-        //         groupBy(message => message.propertyPath),
-        //         // return each item in group as array
-        //         flatMap((group) => group.pipe(
-
-        //             reduce((acc, cur) => [...acc, cur], [])),
-        //         ),
-
-        //         tap(data => console.log("data apple fruit===== " + JSON.stringify(data))),
-        // )
-        //     .pipe(
-        //         map(res => <IFruit>{
-        //             name: '1223'
-        //         }),
-        //         tap(data => alert("data apple fruit===== " + JSON.stringify(data))),
-        //         catchError(this.handleError)
-        //     );
-
-
+        
+       
     }
 
 
