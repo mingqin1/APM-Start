@@ -1,7 +1,7 @@
 import { Injectable, group } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs/Rx';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { of } from 'rxjs/observable/of';
 import { from } from 'rxjs/observable/from';
@@ -27,91 +27,6 @@ export class ProductService {
 
 
     getFruit(): Observable<any> {
-
-        let dict = { alice: 34, bob: 24, chris: 62 };
-        let people = [];
-
-        for (var name in dict) {
-            people.push(name + ": " + dict[name]);
-        }
-
-        console.log(' people:' + people);
-
-        let fruit: IFruit;
-        let validErrors: IValidationErrors;
-
-        let aValidationMessage = {
-            message: 'a validation Message ',
-            type: 'warning'
-        };
-
-        let bValidationMessage = {
-            message: 'b validation message ',
-            type: 'datal'
-        };
-
-
-        let validationMessages: ValidationMessage[];
-
-        validationMessages = [aValidationMessage, bValidationMessage];
-
-
-        validErrors = {
-            ['']: null
-
-        }
-
-        validErrors['ago_out'] = validationMessages;
-        validErrors['color_fake'] = validationMessages;
-
-        delete validErrors[''];
-
-        //alert(Object.keys(validErrors).length);
-
-        fruit = {
-            name: 'apple',
-            validationErrors: validErrors
-        }
-
-
-        //groupby is working
-
-        // const message = [
-        //     {
-        //         "message": " c color fake validation message ",
-        //         "propertyPath": "color_fake"
-        //     },
-
-        //     {
-        //         "message": "a age out validation Message ",
-        //         "propertyPath": "age_out"
-        //     },
-        //     {
-        //         "message": " c color fake validation message ",
-        //         "propertyPath": "color_fake"
-        //     },
-        //     {
-        //         "message": "b age out validation message ",
-        //         "propertyPath": "age_out"
-        //     },
-
-
-        // ];
-
-        // const source = from(message);
-
-        // //group by propetyPath
-        // const example = source.pipe(
-        //     groupBy(message => message.propertyPath),
-
-        // ).pipe(
-        //      // return each item in group as array
-        //      flatMap(group => group.pipe(toArray()  ))
-
-
-        // );
-        // const subscribe = example.subscribe(val => console.log(JSON.stringify(val)));
-
 
         return this.http.get<any>(this.fruitUrl)
             .pipe(
